@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 MODEL_NAME = "facebook/nllb-200-distilled-600M"
 EMBED_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 INPUT_VTT = "subtitles-en.vtt"
-OUTPUT_VTT = "translated_bilingual_semantic.vtt"
+OUTPUT_SRT = "translated_bilingual_semantic.srt"
 MAX_SEGMENTS = 15
 THREADS = 4
 
@@ -97,16 +97,31 @@ def translate_all(entries):
     return results
 
 
-def write_vtt(entries, path):
+def write_srt(entries, path):
     with open(path, "w", encoding="utf-8") as f:
-        f.write("WEBVTT\n\n")
         for e in entries:
-            f.write(f"{e['index']}\n{e['start']} --> {e['end']}\n")
+            start = e["start"].replace(".", ",")
+            end = e["end"].replace(".", ",")
+            f.write(f"{e['index']}\n{start} --> {end}\n")
             f.write(f"{e['zh']}\n{e['text']}\n\n")
+
+
+def deduplicate_entries(entries):
+    deduped = []
+    prev_zh = None
+    counter = 1
+    for e in entries:
+        if e["zh"] == prev_zh:
+            continue
+        deduped.append({**e, "index": str(counter)})
+        counter += 1
+        prev_zh = e["zh"]
+    return deduped
 
 
 if __name__ == "__main__":
     entries = parse_vtt(INPUT_VTT)
     translated = translate_all(entries)
-    write_vtt(translated, OUTPUT_VTT)
-    print(f"✅ 完成翻譯輸出：{OUTPUT_VTT}")
+    deduped = deduplicate_entries(translated)
+    write_srt(deduped, OUTPUT_SRT)
+    print(f"✅ 完成翻譯輸出：{OUTPUT_SRT}")
