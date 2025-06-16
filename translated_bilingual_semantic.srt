@@ -1,0 +1,320 @@
+1
+00:00:02,103 --> 00:00:08,003
+在監控學習後, 機器學習的最廣泛使用形式是未監控的學習.
+After supervised learning, the most widely used form of machine learning is unsupervised learning.
+
+2
+00:00:08,003 --> 00:00:16,551
+我們談過監督學習, 這段影片是關於無監督學習.
+Let's take a look at what that means, we've talked about supervised learning and this video is about unsupervised learning.
+
+3
+00:00:16,551 --> 00:00:24,754
+但不要讓這個名字對你來說是不文明的,
+But don't let the name uncivilized for you, unsupervised learning is I think just as super as supervised learning.
+
+4
+00:00:24,754 --> 00:00:32,243
+在過去回憶的影片中, 在分類問題中,
+When we're looking at supervised learning in the last video recalled, it looks something like this in the case of a classification problem.
+
+5
+00:00:32,243 --> 00:00:43,493
+每個例子都與出口標籤 y 聯絡在一起, 例如良性或惡性, 在未經監督的學習中被極和十字架指定.
+Each example, was associated with an output label y such as benign or malignant, designated by the poles and crosses in unsupervised learning.
+
+6
+00:00:43,493 --> 00:00:55,214
+如果您得到沒有任何輸出標籤 y 的資料,
+Were given data that isn't associated with any output labels y, say you're given data on patients and their tumor size and the patient's age.
+
+7
+00:00:55,214 --> 00:01:03,257
+所以資料集右邊看起來像這樣.
+But not whether the tumor was benign or malignant, so the dataset looks like this on the right.
+
+8
+00:01:03,257 --> 00:01:11,652
+我們不被要求診斷腫瘤是否良性或惡性, 因為我們沒有任何標籤.
+We're not asked to diagnose whether the tumor is benign or malignant, because we're not given any labels.
+
+9
+00:01:11,652 --> 00:01:20,716
+我們的工作是尋找一些結構或圖案,
+Why in the dataset, instead, our job is to find some structure or some pattern or just find something interesting in the data.
+
+10
+00:01:20,716 --> 00:01:27,856
+我們稱之為不受監控的學習, 因為我們不嘗試監控演算法.
+This is unsupervised learning, we call it unsupervised because we're not trying to supervise the algorithm.
+
+11
+00:01:27,856 --> 00:01:37,223
+為了給出每個輸入的正確答案,
+To give some quote right answer for every input, instead, we asked the our room to figure out all by yourself what's interesting.
+
+12
+00:01:37,223 --> 00:01:43,417
+或是這些資料中的哪些模式或結構,
+Or what patterns or structures that might be in this data, with this particular data set.
+
+13
+00:01:43,417 --> 00:01:51,918
+沒有監督的學習演算法可能會決定資料可以分配到兩個不同的群組或兩個不同的叢集.
+An unsupervised learning algorithm, might decide that the data can be assigned to two different groups or two different clusters.
+
+14
+00:01:51,918 --> 00:02:03,130
+這裡是一個叢集, 這裡是另一個叢集或叢集.
+And so it might decide, that there's one cluster what group over here, and there's another cluster or group over here.
+
+15
+00:02:03,130 --> 00:02:08,671
+這是一種非監控學習的特殊型別,
+This is a particular type of unsupervised learning, called a clustering algorithm.
+
+16
+00:02:08,671 --> 00:02:17,151
+因為它將未標示的資料放在不同的叢集中,
+Because it places the unlabeled data, into different clusters and this turns out to be used in many applications.
+
+17
+00:02:17,151 --> 00:02:25,870
+在Google新聞中使用叢集,
+For example, clustering is used in google news, what google news does is every day it goes.
+
+18
+00:02:25,870 --> 00:02:31,719
+在網路上看到數以百計的新聞文章,
+And looks at hundreds of thousands of news articles on the internet, and groups related stories together.
+
+19
+00:02:31,719 --> 00:02:41,831
+在日本最古老的動物園中, 大熊貓生下了後頭雙胞胎.
+For example, here is a sample from Google News, where the headline of the top article, is giant panda gives birth to rear twin cubs at Japan's oldest zoo.
+
+20
+00:02:41,831 --> 00:02:48,664
+這篇文章真的吸引了我的注意力, 因為我的女兒喜歡熊貓,
+This article has actually caught my eye, because my daughter loves pandas and so there are a lot of stuff panda toys.
+
+21
+00:02:48,664 --> 00:02:59,589
+在我家看著熊貓的影片, 看著這個, 你可能會注意到下面還有其他相關文章.
+And watching panda videos in my house, and looking at this, you might notice that below this are other related articles.
+
+22
+00:02:59,589 --> 00:03:05,633
+也許只有從新聞頭條看,
+Maybe from the headlines alone, you can start to guess what clustering might be doing.
+
+23
+00:03:05,633 --> 00:03:21,481
+請注意這句話"熊貓"出現在這裡, 在這裡, 在這裡, 在這裡, 在這裡,
+Notice that the word panda appears here here, here, here and here and notice that the word twin also appears in all five articles.
+
+24
+00:03:21,481 --> 00:03:29,309
+在這些文章中也出現了"動物園"這個字,
+And the word Zoo also appears in all of these articles, so the clustering algorithm is finding articles.
+
+25
+00:03:29,309 --> 00:03:39,161
+搜尋那些提到類似詞語的文章,
+All of all the hundreds of thousands of news articles on the internet that day, finding the articles that mention similar words and grouping them into clusters.
+
+26
+00:03:39,161 --> 00:03:47,463
+這個演算法可以自行找出哪些詞語暗示某些文章是同一群組的.
+Now, what's cool is that this clustering algorithm figures out on his own which words suggest, that certain articles are in the same group.
+
+27
+00:03:47,463 --> 00:03:54,128
+沒有任何谷歌新聞員工告訴演算法找到"熊貓"這個字的文章.
+What I mean is there isn't an employee at google news who's telling the algorithm to find articles that the word panda.
+
+28
+00:03:54,128 --> 00:03:59,783
+雙胞胎和動物園將他們放入同一群組,
+And twins and zoo to put them into the same cluster, the news topics change every day.
+
+29
+00:03:59,783 --> 00:04:08,837
+沒有人能每天都這樣做,
+And there are so many news stories, it just isn't feasible to people doing this every single day for all the topics that use covers.
+
+30
+00:04:08,837 --> 00:04:17,622
+而演算法必須在沒有監督的情況下自行找出今天的新聞文章叢集.
+Instead the algorithm has to figure out on his own without supervision, what are the clusters of news articles today.
+
+31
+00:04:17,622 --> 00:04:23,773
+這就是為什麼這個叢集演算法, 是一種不受監督的學習演算法.
+So that's why this clustering algorithm, is a type of unsupervised learning algorithm.
+
+32
+00:04:23,773 --> 00:04:31,568
+讓我們來看看第二個未經監督的學習範例,
+Let's look at the second example of unsupervised learning applied to clustering genetic or DNA data.
+
+33
+00:04:31,568 --> 00:04:38,189
+這張圖片顯示了DNA微組資料的圖片,
+This image shows a picture of DNA micro array data, these look like tiny grids of a spreadsheet.
+
+34
+00:04:38,189 --> 00:04:50,651
+每個小柱子都代表了一個人的基因或DNA活動,
+And each tiny column represents the genetic or DNA activity of one person, So for example, this entire Column here is from one person's DNA.
+
+35
+00:04:50,651 --> 00:04:57,816
+每一行代表一個特定的基因.
+And this other column is of another person, each row represents a particular gene.
+
+36
+00:04:57,816 --> 00:05:09,640
+或是對某個人的身長影響的基因.
+So just as an example, perhaps this role here might represent a gene that affects eye color, or this role here is a gene that affects how tall someone is.
+
+37
+00:05:09,640 --> 00:05:19,015
+研究者甚至發現, 人是否不喜歡某些蔬菜, 比如菜,布魯塞爾芽,
+Researchers have even found a genetic link to whether someone dislikes certain vegetables, such as broccoli, or brussels sprouts, or asparagus.
+
+38
+00:05:19,015 --> 00:05:28,003
+接下來有人會問你為什麼你沒有吃完沙拉,
+So next time someone asks you why didn't you finish your salad, you can tell them, maybe it's genetic for DNA micro race.
+
+39
+00:05:28,003 --> 00:05:33,720
+該測量對每個人表達多少特定基因.
+The idea is to measure how much certain genes, are expressed for each individual person.
+
+40
+00:05:33,720 --> 00:05:44,446
+紅色,綠色,灰色等等,
+So these colors red, green, gray, and so on, show the degree to which different individuals do, or do not have a specific gene active.
+
+41
+00:05:44,446 --> 00:05:51,986
+進行叢集演算法, 將個體分為不同的類別.
+And what you can do is then run a clustering algorithm to group individuals into different categories.
+
+42
+00:05:51,986 --> 00:06:00,533
+或是不同型別的人, 也許這些人聚集在一起, 讓我們稱之為這個型別一.
+Or different types of people like maybe these individuals that group together, and let's just call this type one.
+
+43
+00:06:00,533 --> 00:06:08,851
+這些人分為二型,
+And these people are grouped into type two, and these people are groups as type three.
+
+44
+00:06:08,851 --> 00:06:16,254
+因為我們並未提前告訴演算法,
+This is unsupervised learning, because we're not telling the algorithm in advance, that there is a type one person with certain characteristics.
+
+45
+00:06:16,254 --> 00:06:21,824
+或是有特定特點的人, 而我們所說的是資料.
+Or a type two person with certain characteristics, instead what we're saying is here's a bunch of data.
+
+46
+00:06:21,824 --> 00:06:28,243
+但你能自動找到資料中的結構嗎?
+I don't know what the different types of people are but can you automatically find structure into data.
+
+47
+00:06:28,243 --> 00:06:36,574
+因為我們不能提前提供物件的正確答案.
+And automatically figure out whether the major types of individuals, since we're not giving the algorithm the right answer for the examples in advance.
+
+48
+00:06:36,574 --> 00:06:47,215
+許多公司有大量的客戶資料庫,
+This is unsupervised learning, here's the third example, many companies have huge databases of customer information given this data.
+
+49
+00:06:47,215 --> 00:06:56,243
+您可以自動將客戶分為不同的市場區域,
+Can you automatically group your customers, into different market segments so that you can more efficiently serve your customers.
+
+50
+00:06:56,243 --> 00:07:02,553
+實際上深度學習點AI團隊做了一些研究,
+Concretely the deep learning dot AI team did some research to better understand the deep learning dot AI community.
+
+51
+00:07:02,553 --> 00:07:11,459
+為什麼不同的人會參加這些課程, 訂閱一批週刊新聞, 或參加我們的人工智慧活動?
+And why different individuals take these classes, subscribed to the batch weekly newsletter, or attend our AI events.
+
+52
+00:07:11,459 --> 00:07:18,409
+讓我們想像深度學習點 AI 社群,
+Let's visualize the deep learning dot AI community, as this collection of people running clustering.
+
+53
+00:07:18,409 --> 00:07:30,242
+這就是市場分割槽, 發現了幾個不同的個人群組, 一群人的主要動機是尋求知識,
+That is market segmentation found a few distinct groups of individuals, one group's primary motivation is seeking knowledge to grow their skills.
+
+54
+00:07:30,242 --> 00:07:38,043
+也許是你, 這很棒, 第二組的主要動力是尋找發展自己的職業方式.
+Perhaps this is you, and so that's great, a second group's primary motivation is looking for a way to develop their career.
+
+55
+00:07:38,043 --> 00:07:45,135
+也許你想得到提升或新工作,
+Maybe you want to get a promotion or a new job, or make some career progression if this describes you, that's great too.
+
+56
+00:07:45,135 --> 00:07:54,209
+也許是你, 這也是很棒的.
+And yet another group wants to stay updated on how AI impacts their field of work, perhaps this is you, that's great too.
+
+57
+00:07:54,209 --> 00:08:01,237
+這是我們團隊用來更好地服務我們的社群,
+This is a clustering that our team used to try to better serve our community as we're trying to figure out.
+
+58
+00:08:01,237 --> 00:08:10,211
+如果其中任何一種是你學習的主要動力, 那就很棒了.
+Whether the major categories of learners in the deeper and community, So if any of these is your top motivation for learning, that's great.
+
+59
+00:08:10,211 --> 00:08:19,615
+我希望我能幫助你在你的旅程上, 或是你想要的東西完全不同於其他三類別.
+And I hope I'll be able to help you on your journey, or in case this is you, and you want something totally different than the other three categories.
+
+60
+00:08:19,615 --> 00:08:26,688
+這也很好, 我想讓你知道, 我還是愛你,
+That's fine too, and I want you to know, I love you all the same, so to summarize a clustering algorithm.
+
+61
+00:08:26,688 --> 00:08:35,385
+這是一種不受監督的學習演算法, 採取沒有標籤的資料,
+Which is a type of unsupervised learning algorithm, takes data without labels and tries to automatically group them into clusters.
+
+62
+00:08:35,385 --> 00:08:42,211
+也許下次你看到或想到熊貓,
+And so maybe the next time you see or think of a panda, maybe you think of clustering as well.
+
+63
+00:08:42,211 --> 00:08:47,032
+還有其他型別的非監督學習.
+And besides clustering, there are other types of unsupervised learning as well.
+
+64
+00:08:47,032 --> 00:08:52,151
+讓我們繼續看下一段影片, 來看看一些其他型別的不受監督的學習演算法.
+Let's go on to the next video, to take a look at some other types of unsupervised learning algorithms.
+
