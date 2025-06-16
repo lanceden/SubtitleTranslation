@@ -18,14 +18,26 @@ THREADS = 4
 cc = OpenCC("s2twp")
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=False)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
-translator = pipeline(
-    "translation",
-    model=model,
-    tokenizer=tokenizer,
-    src_lang="eng_Latn",
-    tgt_lang="zho_Hant",
-    max_length=512,
-)
+# NOTE: `transformers.pipeline` is not thread safe. When used from multiple
+# threads translations may get mixed up, resulting in duplicated or
+# completely wrong sentences.  We lazily create a pipeline per thread to
+# avoid the issue while still keeping the multithreaded structure.
+from threading import local
+
+_thread_ctx = local()
+
+
+def get_translator():
+    if not hasattr(_thread_ctx, "translator"):
+        _thread_ctx.translator = pipeline(
+            "translation",
+            model=model,
+            tokenizer=tokenizer,
+            src_lang="eng_Latn",
+            tgt_lang="zho_Hant",
+            max_length=512,
+        )
+    return _thread_ctx.translator
 embedder = SentenceTransformer(EMBED_MODEL)
 
 
@@ -63,7 +75,8 @@ def align_semantic(en_anchor, zh_block):
 def translate_entry(i, entries):
     try:
         context, anchor = get_context(i, entries)
-        zh_block = translator(context)[0]["translation_text"]
+        # Create/obtain a dedicated pipeline instance for the current thread
+        zh_block = get_translator()(context)[0]["translation_text"]
         aligned = align_semantic(anchor, zh_block)
         return i, aligned
     except Exception as e:
