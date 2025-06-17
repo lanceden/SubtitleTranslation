@@ -1,5 +1,5 @@
 # merge_vtt_to_bilingual_srt.py
-# 新策略：先將字幕片段按句子合併，再進行翻譯，從根源上避免重複。
+# 新策略：按句子合併，但增加長度限制，以避免字幕過長。
 
 import re
 from tqdm import tqdm
@@ -9,11 +9,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import local
 
 # --- 全域設定 ---
-MODEL_NAME = "facebook/nllb-200-distilled-600M"  # 翻譯模型
-INPUT_VTT = "subtitles-en.vtt"  # 輸入的 VTT 檔案
-OUTPUT_SRT = "translated_bilingual_semantic.srt"  # 輸出的雙語 SRT 檔案
-MAX_SEGMENTS = None  # 限制處理的字幕數量，None 表示不限制
-THREADS = 4  # 使用的線程數
+MODEL_NAME = "facebook/nllb-200-distilled-600M"
+INPUT_VTT = "subtitles-en.vtt"
+OUTPUT_SRT = "translated_bilingual_semantic.srt"
+MAX_SEGMENTS = None
+THREADS = 4
+# 【新增】字幕最大字元數限制 (英文原文長度)。
+# 這是一個可以調整的參數。一般來說，一行字幕的極限是 40-50 個中文字。
+# 考慮到雙語，80-100 個英文字元是一個比較合理的上限。
+MAX_CHARS_PER_SUBTITLE = 100
 
 # --- 初始化工具 ---
 cc = OpenCC("s2twp")  # 簡轉繁（台灣正體）
@@ -26,6 +30,7 @@ _thread_ctx = local()
 
 def get_translator():
     """為當前線程獲取或創建一個獨立的翻譯器 pipeline。"""
+
     if not hasattr(_thread_ctx, "translator"):
         _thread_ctx.translator = pipeline(
             "translation",
@@ -75,10 +80,23 @@ def parse_vtt(path):
     return entries[:MAX_SEGMENTS]
 
 
+def finalize_group(group):
+    """輔助函數：將一個分組合併成最終的字幕條目。"""
+    if not group:
+        return None
+    combined_text = " ".join([e["text"] for e in group])
+    return {
+        "start": group[0]["start"],
+        "end": group[-1]["end"],
+        "text": combined_text,
+        "zh": "",
+    }
+
+
 def group_entries_by_sentence(entries):
     """
-    【新核心邏輯】將字幕片段按完整句子分組。
-    這是解決重複翻譯問題的關鍵。
+    【修改】將字幕片段按完整句子或最大長度進行分組。
+    這是解決字幕過長問題的關鍵。
     """
     grouped_entries = []
     current_group = []
@@ -87,31 +105,33 @@ def group_entries_by_sentence(entries):
         return []
 
     for entry in entries:
-        current_group.append(entry)
-        # 判斷句尾：如果文字以句號、問號、驚嘆號結尾，或包含換行符（通常意味著段落結束）
-        # 則認為這是一個句子的結束。
-        if entry["text"].strip().endswith((".", "?", "!", "。", "？", "！")):
-            # 合併當前組
-            combined_text = " ".join([e["text"] for e in current_group])
-            new_entry = {
-                "start": current_group[0]["start"],
-                "end": current_group[-1]["end"],
-                "text": combined_text,
-                "zh": "",  # 預留給翻譯結果
-            }
-            grouped_entries.append(new_entry)
-            current_group = []  # 清空，準備下一組
+        # 檢查如果將當前 entry 加入 group，長度是否會超限
+        current_text_len = len(" ".join([e["text"] for e in current_group]))
+        if (
+            current_group
+            and current_text_len + len(entry["text"]) > MAX_CHARS_PER_SUBTITLE
+        ):
+            # 長度超限，強制結束當前分組
+            final_entry = finalize_group(current_group)
+            if final_entry:
+                grouped_entries.append(final_entry)
+            current_group = []  # 重置分組
 
-    # 處理最後一組（如果文件結尾不是完整句子）
+        # 將當前 entry 加入（新的或未滿的）分組
+        current_group.append(entry)
+
+        # 檢查是否達到句子結尾
+        if entry["text"].strip().endswith((".", "?", "!", "。", "？", "！")):
+            final_entry = finalize_group(current_group)
+            if final_entry:
+                grouped_entries.append(final_entry)
+            current_group = []  # 重置分組
+
+    # 處理循環結束後剩餘的最後一組
     if current_group:
-        combined_text = " ".join([e["text"] for e in current_group])
-        new_entry = {
-            "start": current_group[0]["start"],
-            "end": current_group[-1]["end"],
-            "text": combined_text,
-            "zh": "",
-        }
-        grouped_entries.append(new_entry)
+        final_entry = finalize_group(current_group)
+        if final_entry:
+            grouped_entries.append(final_entry)
 
     return grouped_entries
 
@@ -167,9 +187,9 @@ if __name__ == "__main__":
     entries = parse_vtt(INPUT_VTT)
     print(f"   解析完成，共 {len(entries)} 條原始字幕片段。")
 
-    print("2. 開始按句子合併字幕片段...")
+    print(f"2. 開始按句子或最大長度 ({MAX_CHARS_PER_SUBTITLE}字元) 合併字幕...")
     grouped_entries = group_entries_by_sentence(entries)
-    print(f"   合併完成，共形成 {len(grouped_entries)} 個句子組進行翻譯。")
+    print(f"   合併完成，共形成 {len(grouped_entries)} 條長度適中的字幕進行翻譯。")
 
     print("3. 開始進行多線程翻譯...")
     translated_entries = translate_all(grouped_entries)
