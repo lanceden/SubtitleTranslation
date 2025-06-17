@@ -1,7 +1,7 @@
 import deepl
 
 # === 替換為你的 DeepL API 金鑰 ===
-auth_key = "50f2dc8c-c010-45f7-910a-732867ca3f11:fx"  # 例如：'abc123-xyz...'
+auth_key = ""  # 例如：'abc123-xyz...'
 translator = deepl.Translator(auth_key)
 
 # === 檔案設定 ===
