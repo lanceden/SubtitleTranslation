@@ -2,6 +2,7 @@
 # 新策略：按句子合併，但增加長度限制，以避免字幕過長。
 
 import re
+import torch
 from tqdm import tqdm
 from opencc import OpenCC
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
@@ -9,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import local
 
 # --- 全域設定 ---
-MODEL_NAME = "facebook/nllb-200-distilled-1.3B"
+MODEL_NAME = "facebook/nllb-200-1.3B"  # facebook/nllb-200-distilled-1.3B
 INPUT_VTT = "subtitles-en.vtt"
 OUTPUT_SRT = "translated_bilingual_semantic.srt"
 MAX_SEGMENTS = None
@@ -17,12 +18,17 @@ THREADS = 4
 # 【新增】字幕最大字元數限制 (英文原文長度)。
 # 這是一個可以調整的參數。一般來說，一行字幕的極限是 40-50 個中文字。
 # 考慮到雙語，80-100 個英文字元是一個比較合理的上限。
-MAX_CHARS_PER_SUBTITLE = 100
+MAX_CHARS_PER_SUBTITLE = 80
 
 # --- 初始化工具 ---
 cc = OpenCC("s2twp")  # 簡轉繁（台灣正體）
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=False)
-model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME)
+model = AutoModelForSeq2SeqLM.from_pretrained(
+    MODEL_NAME,
+    torch_dtype=torch.float16,  # 使用半精度
+    low_cpu_mem_usage=True,  # 降低CPU記憶體使用
+    device_map="auto",  # 自動設備管理
+)
 
 # 為每個線程創建獨立的 pipeline 實例以確保線程安全
 _thread_ctx = local()
@@ -30,7 +36,6 @@ _thread_ctx = local()
 
 def get_translator():
     """為當前線程獲取或創建一個獨立的翻譯器 pipeline。"""
-
     if not hasattr(_thread_ctx, "translator"):
         _thread_ctx.translator = pipeline(
             "translation",
