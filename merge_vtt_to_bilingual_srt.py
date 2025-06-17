@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from threading import local
 
 # --- 全域設定 ---
-MODEL_NAME = "facebook/nllb-200-distilled-600M"
+MODEL_NAME = "facebook/nllb-200-distilled-1.3B"
 INPUT_VTT = "subtitles-en.vtt"
 OUTPUT_SRT = "translated_bilingual_semantic.srt"
 MAX_SEGMENTS = None
